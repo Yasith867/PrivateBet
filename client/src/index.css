@@ -308,27 +308,11 @@
   }
 }
 
-/* Aleo Wallet Adapter Button Styling */
+/* Aleo Wallet Adapter Button Styling - minimal overrides for theme consistency */
 .wallet-adapter-button-trigger {
-  background: hsl(var(--primary)) !important;
-  color: hsl(var(--primary-foreground)) !important;
-  border-radius: calc(var(--radius) - 2px) !important;
   font-family: var(--font-sans) !important;
   font-weight: 500 !important;
-  font-size: 0.875rem !important;
-  padding: 0.5rem 1rem !important;
-  height: 2.25rem !important;
-  min-height: 2.25rem !important;
-  border: 1px solid var(--primary-border) !important;
-  transition: all 0.2s ease !important;
-}
-
-.wallet-adapter-button-trigger:hover {
-  opacity: 0.9 !important;
-}
-
-.wallet-adapter-button-trigger:not([disabled]):hover {
-  background: hsl(var(--primary) / 0.9) !important;
+  border-radius: calc(var(--radius) - 2px) !important;
 }
 
 .wallet-adapter-dropdown {
@@ -345,10 +329,6 @@
 .wallet-adapter-dropdown-list-item {
   color: hsl(var(--popover-foreground)) !important;
   font-family: var(--font-sans) !important;
-}
-
-.wallet-adapter-dropdown-list-item:hover {
-  background: hsl(var(--muted)) !important;
 }
 
 .wallet-adapter-modal-wrapper {
@@ -377,33 +357,11 @@
 }
 
 .wallet-adapter-modal-list .wallet-adapter-button {
-  background: hsl(var(--muted)) !important;
   color: hsl(var(--foreground)) !important;
   border-radius: var(--radius) !important;
   font-family: var(--font-sans) !important;
 }
 
-.wallet-adapter-modal-list .wallet-adapter-button:hover {
-  background: hsl(var(--muted) / 0.8) !important;
-}
-
 .wallet-adapter-modal-button-close {
-  background: hsl(var(--muted)) !important;
   color: hsl(var(--muted-foreground)) !important;
-}
-
-.wallet-adapter-modal-button-close:hover {
-  background: hsl(var(--destructive)) !important;
-  color: hsl(var(--destructive-foreground)) !important;
-}
-
-/* Connected wallet button styling */
-.aleo-wallet-button-wrapper .wallet-adapter-button-trigger {
-  background: transparent !important;
-  border: 1px solid hsl(var(--border)) !important;
-  color: hsl(var(--foreground)) !important;
-}
-
-.aleo-wallet-button-wrapper .wallet-adapter-button-trigger:hover {
-  background: hsl(var(--muted)) !important;
 }

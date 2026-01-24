@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
 import {
   Dialog,
   DialogContent,
@@ -56,7 +57,8 @@ const categoryOptions = [
 ];
 
 export function CreateMarketModal() {
-  const { isCreateMarketModalOpen, setCreateMarketModalOpen, wallet } = useAppStore();
+  const { isCreateMarketModalOpen, setCreateMarketModalOpen } = useAppStore();
+  const { connected } = useWallet();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newOutcome, setNewOutcome] = useState('');
@@ -99,7 +101,7 @@ export function CreateMarketModal() {
   }, [outcomes, form]);
 
   const onSubmit = useCallback(async (data: CreateMarketForm) => {
-    if (!wallet.connected) {
+    if (!connected) {
       toast({
         title: 'Wallet Not Connected',
         description: 'Please connect your wallet to create a market.',
@@ -133,7 +135,7 @@ export function CreateMarketModal() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [wallet.connected, toast, handleClose]);
+  }, [connected, toast, handleClose]);
 
   // Get minimum date (tomorrow)
   const minDate = new Date();

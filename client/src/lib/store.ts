@@ -1,12 +1,7 @@
 import { create } from 'zustand';
-import type { Market, Bet, MarketFilters, WalletState, PortfolioStats } from '@shared/schema';
+import type { Market, Bet, MarketFilters, PortfolioStats } from '@shared/schema';
 
 interface AppState {
-  // Wallet state
-  wallet: WalletState;
-  setWallet: (wallet: Partial<WalletState>) => void;
-  disconnectWallet: () => void;
-  
   // Markets
   markets: Market[];
   setMarkets: (markets: Market[]) => void;
@@ -35,18 +30,6 @@ interface AppState {
 }
 
 export const useAppStore = create<AppState>((set) => ({
-  // Wallet
-  wallet: {
-    connected: false,
-    address: undefined,
-    balance: undefined,
-    network: 'testnet',
-  },
-  setWallet: (wallet) => set((state) => ({ wallet: { ...state.wallet, ...wallet } })),
-  disconnectWallet: () => set({ 
-    wallet: { connected: false, address: undefined, balance: undefined, network: 'testnet' } 
-  }),
-  
   // Markets
   markets: [],
   setMarkets: (markets) => set({ markets }),

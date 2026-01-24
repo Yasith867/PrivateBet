@@ -94,10 +94,17 @@ npm run dev
 2. **ZK Proofs**: Settlement verifies winning bets without revealing amounts
 3. **View Keys**: Optional disclosure for compliance/auditing
 
-### Aleo Integration
-- Network: Testnet Beta
-- Program: `prediction_market.aleo`
-- Wallet: Leo Wallet via @demox-labs/aleo-wallet-adapter
+### Aleo Wallet Integration
+- Network: Aleo Testnet Beta
+- Wallet: Real Leo Wallet integration via @demox-labs/aleo-wallet-adapter packages
+- Packages used:
+  - @demox-labs/aleo-wallet-adapter-base
+  - @demox-labs/aleo-wallet-adapter-react
+  - @demox-labs/aleo-wallet-adapter-reactui
+  - @demox-labs/aleo-wallet-adapter-leo
+- All components use `useWallet` hook from `@demox-labs/aleo-wallet-adapter-react`
+- Wallet state managed by WalletProvider (not Zustand store)
+- Custom CSS styling for wallet adapter to match dark theme
 
 ### Leo Contract Limitations (Demo)
 The smart contract in `leo/prediction_market.leo` is a demonstration structure:
@@ -106,8 +113,8 @@ The smart contract in `leo/prediction_market.leo` is a demonstration structure:
 - Real deployment would need oracle integration for outcome verification
 - Production version should add more robust checks and access controls
 
-### Current Demo Mode
-- Wallet connection is simulated (demo address generated)
+### Current Mode
+- Real wallet connection via Leo Wallet browser extension
 - Frontend uses backend API for data with demo fallback
 - All API inputs are validated with Zod schemas
 
