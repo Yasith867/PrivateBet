@@ -4,17 +4,6 @@
 
 program prediction_market.aleo {
     
-    // ============ CONSTRUCTOR ============
-    
-    // Required for Consensus V9+ - prevents contract upgrades
-    @noupgrade
-    async transition initialize() -> Future {
-        return finalize_initialize();
-    }
-    
-    async function finalize_initialize() {
-        // No-op initialization, marks contract as non-upgradeable
-    }
     
     // ============ RECORDS (Private State) ============
     
@@ -76,7 +65,7 @@ program prediction_market.aleo {
             market_id: market_id,
             outcome_id: outcome_id,
             amount: amount,
-            timestamp: block.height as u64,
+            timestamp: 0u64,
         };
         
         // Update public market stats
