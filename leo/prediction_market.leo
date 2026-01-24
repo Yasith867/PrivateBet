@@ -8,12 +8,12 @@ program prediction_market.aleo {
     
     // Required for Consensus V9+ - prevents contract upgrades
     @noupgrade
-    async transition constructor() -> Future {
-        return finalize_constructor();
+    async transition initialize() -> Future {
+        return finalize_initialize();
     }
     
-    async function finalize_constructor() {
-        // No-op constructor, just marks contract as non-upgradeable
+    async function finalize_initialize() {
+        // No-op initialization, marks contract as non-upgradeable
     }
     
     // ============ RECORDS (Private State) ============
