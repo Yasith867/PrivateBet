@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
 import { MarketCard } from '@/components/market-card';
 import { MarketFilters } from '@/components/market-filters';
 import { StatsCard } from '@/components/stats-card';
@@ -123,7 +124,8 @@ const demoMarkets: Market[] = [
 ];
 
 export default function HomePage() {
-  const { filters, wallet, setCreateMarketModalOpen } = useAppStore();
+  const { filters, setCreateMarketModalOpen } = useAppStore();
+  const { connected } = useWallet();
 
   // Fetch markets
   const { data: markets, isLoading } = useQuery<Market[]>({
@@ -212,7 +214,7 @@ export default function HomePage() {
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-              {!wallet.connected ? (
+              {!connected ? (
                 <Button size="lg" className="gap-2" data-testid="button-hero-connect">
                   <Shield className="h-5 w-5" />
                   Connect Wallet to Start
@@ -306,7 +308,7 @@ export default function HomePage() {
                   : 'Be the first to create a prediction market!'
                 }
               </p>
-              {wallet.connected && (
+              {connected && (
                 <Button onClick={() => setCreateMarketModalOpen(true)} data-testid="button-empty-create">
                   Create Market
                 </Button>

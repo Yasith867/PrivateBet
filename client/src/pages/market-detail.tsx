@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useRoute, Link } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
+import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -151,7 +152,8 @@ const categoryColors: Record<string, string> = {
 
 export default function MarketDetailPage() {
   const [, params] = useRoute('/market/:id');
-  const { wallet, setBettingModalOpen, setSelectedMarket, setSelectedOutcomeId } = useAppStore();
+  const { connected } = useWallet();
+  const { setBettingModalOpen, setSelectedMarket, setSelectedOutcomeId } = useAppStore();
   const { toast } = useToast();
 
   const { data: market, isLoading } = useQuery<Market>({
@@ -172,7 +174,7 @@ export default function MarketDetailPage() {
   const CategoryIcon = market ? categoryIcons[market.category] || MoreHorizontal : MoreHorizontal;
 
   const handlePlaceBet = (outcomeId: string) => {
-    if (!wallet.connected) {
+    if (!connected) {
       toast({
         title: 'Wallet Not Connected',
         description: 'Please connect your wallet to place a bet.',

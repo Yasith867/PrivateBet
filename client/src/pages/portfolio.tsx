@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'wouter';
+import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,7 +9,6 @@ import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { StatsCard } from '@/components/stats-card';
-import { useAppStore } from '@/lib/store';
 import type { Bet, Market, PortfolioStats } from '@shared/schema';
 import {
   Shield,
@@ -116,25 +116,25 @@ const demoStats: PortfolioStats = {
 };
 
 export default function PortfolioPage() {
-  const { wallet } = useAppStore();
+  const { publicKey, connected } = useWallet();
   const [showAmounts, setShowAmounts] = useState(false);
 
   // Fetch user bets
   const { data: bets, isLoading: betsLoading } = useQuery<(Bet & { market: Market })[]>({
-    queryKey: ['/api/bets', wallet.address],
+    queryKey: ['/api/bets', publicKey],
     queryFn: async () => {
       await new Promise(resolve => setTimeout(resolve, 500));
-      return wallet.connected ? demoBets : [];
+      return connected ? demoBets : [];
     },
-    enabled: wallet.connected,
+    enabled: connected,
   });
 
   // Fetch portfolio stats
   const { data: stats, isLoading: statsLoading } = useQuery<PortfolioStats>({
-    queryKey: ['/api/portfolio/stats', wallet.address],
+    queryKey: ['/api/portfolio/stats', publicKey],
     queryFn: async () => {
       await new Promise(resolve => setTimeout(resolve, 300));
-      return wallet.connected ? demoStats : {
+      return connected ? demoStats : {
         totalBets: 0,
         activeBets: 0,
         totalWagered: 0,
@@ -142,13 +142,13 @@ export default function PortfolioPage() {
         winRate: 0,
       };
     },
-    enabled: wallet.connected,
+    enabled: connected,
   });
 
   const activeBets = useMemo(() => bets?.filter(b => !b.isSettled) || [], [bets]);
   const settledBets = useMemo(() => bets?.filter(b => b.isSettled) || [], [bets]);
 
-  if (!wallet.connected) {
+  if (!connected) {
     return (
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-md mx-auto text-center">

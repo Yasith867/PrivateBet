@@ -1,5 +1,9 @@
 import { useMemo, useCallback, useEffect } from 'react';
-import { useAppStore } from '@/lib/store';
+import { WalletProvider as AleoWalletProvider } from '@demox-labs/aleo-wallet-adapter-react';
+import { WalletModalProvider, WalletMultiButton } from '@demox-labs/aleo-wallet-adapter-reactui';
+import { LeoWalletAdapter } from '@demox-labs/aleo-wallet-adapter-leo';
+import { DecryptPermission, WalletAdapterNetwork } from '@demox-labs/aleo-wallet-adapter-base';
+import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -12,75 +16,81 @@ import {
 import { Wallet, Copy, LogOut, ExternalLink, Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-// Simulated wallet connection for demo (will be replaced with real Aleo wallet)
+import '@demox-labs/aleo-wallet-adapter-reactui/styles.css';
+
+interface AleoWalletProviderProps {
+  children: React.ReactNode;
+}
+
+export function AleoWalletContextProvider({ children }: AleoWalletProviderProps) {
+  const wallets = useMemo(
+    () => [
+      new LeoWalletAdapter({
+        appName: 'PrivateBet',
+      }),
+    ],
+    []
+  );
+
+  return (
+    <AleoWalletProvider
+      wallets={wallets}
+      decryptPermission={DecryptPermission.UponRequest}
+      network={WalletAdapterNetwork.TestnetBeta}
+      autoConnect
+    >
+      <WalletModalProvider>
+        {children}
+      </WalletModalProvider>
+    </AleoWalletProvider>
+  );
+}
+
 export function WalletButton() {
-  const { wallet, setWallet, disconnectWallet } = useAppStore();
+  const { publicKey, wallet, disconnect, connecting, connected } = useWallet();
   const { toast } = useToast();
 
-  const connectWallet = useCallback(async () => {
-    // Simulate wallet connection - in production this would use Aleo Wallet Adapter
-    try {
-      // Simulate connection delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Generate a demo Aleo address
-      const demoAddress = `aleo1${Array.from({ length: 58 }, () => 
-        'abcdefghijklmnopqrstuvwxyz0123456789'[Math.floor(Math.random() * 36)]
-      ).join('')}`;
-      
-      setWallet({
-        connected: true,
-        address: demoAddress,
-        balance: 1000.5,
-        network: 'testnet',
-      });
-      
+  useEffect(() => {
+    if (connected && publicKey) {
       toast({
         title: "Wallet Connected",
         description: "Successfully connected to Aleo Testnet Beta",
       });
-    } catch (error) {
-      toast({
-        title: "Connection Failed",
-        description: "Failed to connect wallet. Please try again.",
-        variant: "destructive",
-      });
     }
-  }, [setWallet, toast]);
+  }, [connected, publicKey]);
 
-  const handleDisconnect = useCallback(() => {
-    disconnectWallet();
-    toast({
-      title: "Wallet Disconnected",
-      description: "Your wallet has been disconnected.",
-    });
-  }, [disconnectWallet, toast]);
+  const handleDisconnect = useCallback(async () => {
+    try {
+      await disconnect();
+      toast({
+        title: "Wallet Disconnected",
+        description: "Your wallet has been disconnected.",
+      });
+    } catch (error) {
+      console.error('Failed to disconnect:', error);
+    }
+  }, [disconnect, toast]);
 
   const copyAddress = useCallback(() => {
-    if (wallet.address) {
-      navigator.clipboard.writeText(wallet.address);
+    if (publicKey) {
+      navigator.clipboard.writeText(publicKey);
       toast({
         title: "Address Copied",
         description: "Wallet address copied to clipboard.",
       });
     }
-  }, [wallet.address, toast]);
+  }, [publicKey, toast]);
 
   const truncatedAddress = useMemo(() => {
-    if (!wallet.address) return '';
-    return `${wallet.address.slice(0, 8)}...${wallet.address.slice(-6)}`;
-  }, [wallet.address]);
+    if (!publicKey) return '';
+    return `${publicKey.slice(0, 8)}...${publicKey.slice(-6)}`;
+  }, [publicKey]);
 
-  if (!wallet.connected) {
+  if (!connected || !publicKey) {
     return (
-      <Button
-        onClick={connectWallet}
-        className="gap-2"
-        data-testid="button-connect-wallet"
-      >
-        <Wallet className="h-4 w-4" />
-        Connect Wallet
-      </Button>
+      <div className="aleo-wallet-button-wrapper" data-testid="button-connect-wallet">
+        <WalletMultiButton />
+      </div>
     );
   }
 
@@ -97,13 +107,13 @@ export function WalletButton() {
       <DropdownMenuContent align="end" className="w-64">
         <div className="p-3">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-muted-foreground">Balance</span>
+            <span className="text-sm text-muted-foreground">Connected</span>
             <Badge variant="secondary" className="gap-1">
               <Shield className="h-3 w-3" />
-              {wallet.network}
+              Testnet Beta
             </Badge>
           </div>
-          <p className="text-2xl font-bold">{wallet.balance?.toLocaleString()} ALEO</p>
+          <p className="font-mono text-xs break-all text-muted-foreground">{publicKey}</p>
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={copyAddress} data-testid="button-copy-address">
@@ -112,7 +122,7 @@ export function WalletButton() {
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <a 
-            href={`https://explorer.aleo.org/address/${wallet.address}`}
+            href={`https://explorer.aleo.org/address/${publicKey}`}
             target="_blank"
             rel="noopener noreferrer"
             data-testid="link-view-explorer"
@@ -133,4 +143,18 @@ export function WalletButton() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
+}
+
+export function useAleoWallet() {
+  const wallet = useWallet();
+  return {
+    connected: wallet.connected,
+    address: wallet.publicKey,
+    connecting: wallet.connecting,
+    disconnect: wallet.disconnect,
+    signMessage: wallet.signMessage,
+    decrypt: wallet.decrypt,
+    requestRecords: wallet.requestRecords,
+    requestTransaction: wallet.requestTransaction,
+  };
 }

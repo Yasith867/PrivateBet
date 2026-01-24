@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'wouter';
+import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { WalletButton } from '@/components/wallet-provider';
@@ -17,7 +18,8 @@ const navItems = [
 
 export function Header() {
   const [location] = useLocation();
-  const { wallet, setCreateMarketModalOpen } = useAppStore();
+  const { connected } = useWallet();
+  const { setCreateMarketModalOpen } = useAppStore();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
@@ -63,7 +65,7 @@ export function Header() {
 
           {/* Right Section */}
           <div className="flex items-center gap-2">
-            {wallet.connected && (
+            {connected && (
               <Button
                 variant="outline"
                 size="sm"
@@ -105,7 +107,7 @@ export function Header() {
                       </Link>
                     );
                   })}
-                  {wallet.connected && (
+                  {connected && (
                     <Button
                       variant="outline"
                       className="mt-4 gap-2"

@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
 import {
   Dialog,
   DialogContent,
@@ -22,8 +23,8 @@ export function BettingModal() {
     isBettingModalOpen, 
     setBettingModalOpen,
     setSelectedOutcomeId,
-    wallet 
   } = useAppStore();
+  const { connected, publicKey } = useWallet();
   const { toast } = useToast();
   
   const [amount, setAmount] = useState<number>(10);
@@ -31,7 +32,7 @@ export function BettingModal() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const selectedOutcome = selectedMarket?.outcomes.find(o => o.id === selectedOutcomeId);
-  const maxBalance = wallet.balance || 0;
+  const maxBalance = 1000; // Default balance for demo (in production, fetch from wallet)
 
   const handleClose = useCallback(() => {
     setBettingModalOpen(false);
@@ -40,7 +41,7 @@ export function BettingModal() {
   }, [setBettingModalOpen, setSelectedOutcomeId]);
 
   const handlePlaceBet = useCallback(async () => {
-    if (!selectedMarket || !selectedOutcomeId || !wallet.connected) return;
+    if (!selectedMarket || !selectedOutcomeId || !connected) return;
 
     setIsSubmitting(true);
     try {
@@ -67,7 +68,7 @@ export function BettingModal() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [selectedMarket, selectedOutcomeId, wallet.connected, toast, handleClose]);
+  }, [selectedMarket, selectedOutcomeId, connected, toast, handleClose]);
 
   const potentialWinnings = selectedOutcome?.probability 
     ? (amount * (100 / selectedOutcome.probability)).toFixed(2)
