@@ -34,18 +34,20 @@ export type Outcome = z.infer<typeof outcomeSchema>;
 // Market schema
 export const marketSchema = z.object({
   id: z.string(),
+  chainMarketId: z.string().optional(),
   title: z.string().min(5).max(200),
   description: z.string().max(1000).optional(),
   category: z.enum(["crypto", "politics", "sports", "technology", "finance", "other"]),
   outcomes: z.array(outcomeSchema).min(2).max(10),
   status: z.enum(["pending", "active", "resolved", "cancelled"]),
-  resolutionDate: z.string(), // ISO date string
+  resolutionDate: z.string(),
   createdAt: z.string(),
   creatorAddress: z.string(),
   totalVolume: z.number().default(0),
   participantCount: z.number().default(0),
   winningOutcomeId: z.string().optional(),
   imageUrl: z.string().optional(),
+  transactionId: z.string().optional(),
 });
 
 export type Market = z.infer<typeof marketSchema>;
@@ -57,6 +59,9 @@ export const insertMarketSchema = marketSchema.omit({
   participantCount: true,
   winningOutcomeId: true,
   status: true,
+}).extend({
+  chainMarketId: z.string().optional(),
+  transactionId: z.string().optional(),
 });
 
 export type InsertMarket = z.infer<typeof insertMarketSchema>;
@@ -71,7 +76,6 @@ export const betSchema = z.object({
   createdAt: z.string(),
   isSettled: z.boolean().default(false),
   winnings: z.number().optional(),
-  // On-chain record references (encrypted)
   recordNonce: z.string().optional(),
   transactionId: z.string().optional(),
 });
@@ -84,7 +88,8 @@ export const insertBetSchema = betSchema.omit({
   isSettled: true,
   winnings: true,
   recordNonce: true,
-  transactionId: true,
+}).extend({
+  transactionId: z.string().optional(),
 });
 
 export type InsertBet = z.infer<typeof insertBetSchema>;

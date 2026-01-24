@@ -10,6 +10,7 @@ PrivateBet is a privacy-focused prediction market platform built on Aleo's zero-
 - **Hidden Positions**: Only aggregated market statistics (volume, participants) are public
 - **Private Settlement**: Winners claim rewards without revealing their original bets
 - **Wallet Integration**: Connect via Aleo Wallet Adapter (Leo Wallet supported)
+- **Real Blockchain Integration**: All transactions execute on Aleo Testnet Beta
 
 ## Tech Stack
 
@@ -30,6 +31,7 @@ PrivateBet is a privacy-focused prediction market platform built on Aleo's zero-
 - Leo programming language smart contracts
 - Aleo Testnet Beta deployment
 - Zero-knowledge proof verification
+- Provable API for on-chain queries
 
 ## Project Structure
 
@@ -47,7 +49,8 @@ PrivateBet is a privacy-focused prediction market platform built on Aleo's zero-
 │   │   │   ├── market-detail.tsx
 │   │   │   └── portfolio.tsx
 │   │   └── lib/           # Utilities
-│   │       └── store.ts   # Zustand store
+│   │       ├── store.ts   # Zustand store
+│   │       └── aleo-service.ts  # Aleo blockchain service
 ├── server/                # Express backend
 │   ├── routes.ts         # API endpoints
 │   └── storage.ts        # Data storage
@@ -119,10 +122,23 @@ The smart contract in `leo/prediction_market.leo`:
 - Real deployment would need oracle integration for outcome verification
 - Production version should add more robust checks and access controls
 
+### Aleo Service (client/src/lib/aleo-service.ts)
+The AleoService class provides:
+- `getMappingValue()` - Query on-chain mappings via Provable API
+- `getMarketVolume()` - Get market trading volume
+- `getMarketParticipants()` - Get participant count
+- `isMarketResolved()` - Check if market is resolved
+- `getWinningOutcome()` - Get winning outcome ID
+- `getTransactionStatus()` - Check transaction status
+- `createPlaceBetTransaction()` - Create place_bet transaction
+- `createMarketTransaction()` - Create create_market transaction
+- `createResolveMarketTransaction()` - Create resolve_market transaction
+
 ### Current Mode
 - Real wallet connection via Leo Wallet browser extension
-- Frontend uses backend API for data with demo fallback
+- Real blockchain transactions via Leo Wallet adapter
 - All API inputs are validated with Zod schemas
+- No demo/hardcoded data - all data comes from API
 
 ## User Preferences
 

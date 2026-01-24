@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useWallet } from '@demox-labs/aleo-wallet-adapter-react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Dialog,
   DialogContent,
@@ -14,7 +15,9 @@ import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
 import { useAppStore } from '@/lib/store';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, Lock, Eye, EyeOff, AlertTriangle, Loader2 } from 'lucide-react';
+import { aleoService } from '@/lib/aleo-service';
+import { apiRequest } from '@/lib/queryClient';
+import { Shield, Lock, Eye, EyeOff, AlertTriangle, Loader2, ExternalLink } from 'lucide-react';
 
 export function BettingModal() {
   const { 
@@ -24,54 +27,123 @@ export function BettingModal() {
     setBettingModalOpen,
     setSelectedOutcomeId,
   } = useAppStore();
-  const { connected, publicKey } = useWallet();
+  const { connected, publicKey, requestTransaction } = useWallet();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   
-  const [amount, setAmount] = useState<number>(10);
+  const [amount, setAmount] = useState<number>(100000);
   const [showAmount, setShowAmount] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [transactionId, setTransactionId] = useState<string | null>(null);
 
   const selectedOutcome = selectedMarket?.outcomes.find(o => o.id === selectedOutcomeId);
-  const maxBalance = 1000; // Default balance for demo (in production, fetch from wallet)
+  const maxBalance = 10000000;
 
   const handleClose = useCallback(() => {
     setBettingModalOpen(false);
     setSelectedOutcomeId(null);
-    setAmount(10);
+    setAmount(100000);
+    setTransactionId(null);
   }, [setBettingModalOpen, setSelectedOutcomeId]);
 
+  const betMutation = useMutation({
+    mutationFn: async (data: { marketId: string; outcomeId: string; amount: number; ownerAddress: string; transactionId?: string }) => {
+      const res = await apiRequest('POST', '/api/bets', data);
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/bets'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/markets'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/portfolio/stats'] });
+    },
+  });
+
   const handlePlaceBet = useCallback(async () => {
-    if (!selectedMarket || !selectedOutcomeId || !connected) return;
+    if (!selectedMarket || !selectedOutcomeId || !connected || !publicKey) return;
 
     setIsSubmitting(true);
+    setTransactionId(null);
+
     try {
-      // Simulate placing bet via Aleo transaction
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast({
-        title: "Bet Placed Successfully",
-        description: (
-          <div className="flex items-center gap-2">
-            <Shield className="h-4 w-4 text-accent" />
-            <span>Your bet is encrypted and private on Aleo</span>
-          </div>
-        ),
-      });
-      
-      handleClose();
-    } catch (error) {
+      const chainMarketId = selectedMarket.chainMarketId || selectedMarket.id;
+      const outcomeIndex = selectedMarket.outcomes.findIndex(o => o.id === selectedOutcomeId);
+      const chainOutcomeId = aleoService.generateOutcomeId(chainMarketId, outcomeIndex);
+
+      if (requestTransaction) {
+        const transaction = aleoService.createPlaceBetTransaction(
+          publicKey,
+          chainMarketId,
+          chainOutcomeId,
+          amount,
+          500000
+        );
+
+        toast({
+          title: "Confirm in Wallet",
+          description: "Please approve the transaction in your Leo Wallet",
+        });
+
+        const txId = await requestTransaction(transaction);
+        setTransactionId(txId);
+
+        await betMutation.mutateAsync({
+          marketId: selectedMarket.id,
+          outcomeId: selectedOutcomeId,
+          amount: amount,
+          ownerAddress: publicKey,
+          transactionId: txId,
+        });
+
+        toast({
+          title: "Bet Placed Successfully",
+          description: (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Shield className="h-4 w-4 text-accent" />
+                <span>Your bet is encrypted and private on Aleo</span>
+              </div>
+              <a
+                href={`https://testnet.explorer.provable.com/transaction/${txId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-xs text-primary hover:underline"
+              >
+                View transaction <ExternalLink className="h-3 w-3" />
+              </a>
+            </div>
+          ),
+        });
+
+        handleClose();
+      } else {
+        await betMutation.mutateAsync({
+          marketId: selectedMarket.id,
+          outcomeId: selectedOutcomeId,
+          amount: amount,
+          ownerAddress: publicKey,
+        });
+
+        toast({
+          title: "Bet Recorded",
+          description: "Your bet has been recorded. Connect Leo Wallet for on-chain transactions.",
+        });
+
+        handleClose();
+      }
+    } catch (error: any) {
+      console.error('Bet placement error:', error);
       toast({
         title: "Transaction Failed",
-        description: "Failed to place bet. Please try again.",
+        description: error.message || "Failed to place bet. Please try again.",
         variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
     }
-  }, [selectedMarket, selectedOutcomeId, connected, toast, handleClose]);
+  }, [selectedMarket, selectedOutcomeId, connected, publicKey, requestTransaction, amount, toast, handleClose, betMutation]);
 
   const potentialWinnings = selectedOutcome?.probability 
-    ? (amount * (100 / selectedOutcome.probability)).toFixed(2)
+    ? (amount * (100 / selectedOutcome.probability)).toFixed(0)
     : '0';
 
   if (!selectedMarket || !selectedOutcome) return null;
@@ -90,13 +162,11 @@ export function BettingModal() {
         </DialogHeader>
 
         <div className="space-y-6 py-4">
-          {/* Market Info */}
           <div className="p-4 rounded-lg bg-muted/50 border border-border/50">
             <p className="text-sm text-muted-foreground mb-1">Market</p>
             <p className="font-medium line-clamp-2">{selectedMarket.title}</p>
           </div>
 
-          {/* Selected Outcome */}
           <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
             <div className="flex items-center justify-between">
               <div>
@@ -109,10 +179,9 @@ export function BettingModal() {
             </div>
           </div>
 
-          {/* Amount Input */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <Label htmlFor="amount">Bet Amount (ALEO)</Label>
+              <Label htmlFor="amount">Bet Amount (microcredits)</Label>
               <Button
                 variant="ghost"
                 size="sm"
@@ -131,8 +200,9 @@ export function BettingModal() {
                 type={showAmount ? 'number' : 'password'}
                 value={amount}
                 onChange={(e) => setAmount(Math.min(Number(e.target.value), maxBalance))}
-                min={1}
+                min={1000}
                 max={maxBalance}
+                step={1000}
                 className="pr-16 text-lg font-mono"
                 data-testid="input-bet-amount"
               />
@@ -150,24 +220,23 @@ export function BettingModal() {
               value={[amount]}
               onValueChange={([val]) => setAmount(val)}
               max={maxBalance}
-              min={1}
-              step={1}
+              min={1000}
+              step={10000}
               className="py-2"
             />
 
             <div className="flex justify-between text-sm text-muted-foreground">
-              <span>Min: 1 ALEO</span>
-              <span>Balance: {maxBalance.toLocaleString()} ALEO</span>
+              <span>Min: 1,000</span>
+              <span>Max: {maxBalance.toLocaleString()}</span>
             </div>
           </div>
 
-          {/* Potential Winnings */}
           <div className="p-4 rounded-lg bg-accent/10 border border-accent/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Potential Winnings</p>
+                <p className="text-sm text-muted-foreground mb-1">Potential Winnings (2x)</p>
                 <p className="text-2xl font-bold text-accent">
-                  {showAmount ? `${potentialWinnings} ALEO` : '•••••'}
+                  {showAmount ? `${(amount * 2).toLocaleString()}` : '•••••'}
                 </p>
               </div>
               <div className="flex items-center gap-1 text-accent">
@@ -177,16 +246,15 @@ export function BettingModal() {
             </div>
           </div>
 
-          {/* Privacy Notice */}
           <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 text-sm">
             <AlertTriangle className="h-4 w-4 text-yellow-500 mt-0.5 shrink-0" />
             <p className="text-muted-foreground">
-              Your bet amount, position, and winnings are fully encrypted. Only you can see your bet details using your Aleo wallet.
+              Your bet will be submitted to the Aleo blockchain. Transaction fees apply. 
+              Ensure you have sufficient balance in your wallet.
             </p>
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex gap-3">
           <Button
             variant="outline"
@@ -198,7 +266,7 @@ export function BettingModal() {
           </Button>
           <Button
             onClick={handlePlaceBet}
-            disabled={isSubmitting || amount <= 0 || amount > maxBalance}
+            disabled={isSubmitting || amount < 1000 || amount > maxBalance || !connected}
             className="flex-1 gap-2"
             data-testid="button-confirm-bet"
           >
