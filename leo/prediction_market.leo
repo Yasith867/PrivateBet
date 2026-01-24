@@ -4,6 +4,18 @@
 
 program prediction_market.aleo {
     
+    // ============ CONSTRUCTOR ============
+    
+    // Required for Consensus V9+ - prevents contract upgrades
+    @noupgrade
+    async transition constructor() -> Future {
+        return finalize_constructor();
+    }
+    
+    async function finalize_constructor() {
+        // No-op constructor, just marks contract as non-upgradeable
+    }
+    
     // ============ RECORDS (Private State) ============
     
     // Private bet record - encrypted on-chain, only owner can decrypt
