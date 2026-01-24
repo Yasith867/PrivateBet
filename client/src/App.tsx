@@ -42,23 +42,6 @@ function App() {
                     <span>Powered by Aleo Zero-Knowledge Proofs</span>
                   </div>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <a 
-                      href="https://developer.aleo.org/" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="hover:text-foreground transition-colors"
-                    >
-                      Docs
-                    </a>
-                    <a 
-                      href="https://github.com/AleoNet" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="hover:text-foreground transition-colors"
-                    >
-                      GitHub
-                    </a>
-                    <span className="text-border">|</span>
                     <span>Testnet Beta</span>
                   </div>
                 </div>
