@@ -102,7 +102,8 @@ export class AleoService {
       PROGRAM_ID,
       'place_bet',
       inputs,
-      fee
+      fee,
+      false
     );
   }
 
@@ -125,7 +126,8 @@ export class AleoService {
       PROGRAM_ID,
       'create_market',
       inputs,
-      fee
+      fee,
+      false
     );
   }
 
@@ -146,7 +148,8 @@ export class AleoService {
       PROGRAM_ID,
       'resolve_market',
       inputs,
-      fee
+      fee,
+      false
     );
   }
 
