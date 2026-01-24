@@ -106,8 +106,14 @@ npm run dev
 - Wallet state managed by WalletProvider (not Zustand store)
 - Custom CSS styling for wallet adapter to match dark theme
 
-### Leo Contract Limitations (Demo)
-The smart contract in `leo/prediction_market.leo` is a demonstration structure:
+### Deployed Contract
+- **Program Name:** `prediction_marketv01.aleo`
+- **Network:** Aleo Testnet Beta
+- **Transaction ID:** `at1p27dwk0fj8ev4pjjr560enn7swmhz349j5dsswurwwzv0ejsrqysrtvel0`
+- **Explorer:** https://testnet.explorer.provable.com/transaction/at1p27dwk0fj8ev4pjjr560enn7swmhz349j5dsswurwwzv0ejsrqysrtvel0
+
+### Leo Contract Notes
+The smart contract in `leo/prediction_market.leo`:
 - Market existence validation is minimal
 - Resolution logic is simplified (2x winnings)
 - Real deployment would need oracle integration for outcome verification
