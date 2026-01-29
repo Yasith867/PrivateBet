@@ -1,0 +1,47 @@
+03:45:10.773 Running build in Washington, D.C., USA (East) – iad1
+03:45:10.774 Build machine configuration: 4 cores, 8 GB
+03:45:10.874 Cloning github.com/Yasith867/PrivateBet (Branch: main, Commit: 03132a6)
+03:45:10.875 Previous build caches not available.
+03:45:11.235 Cloning completed: 361.000ms
+03:45:11.570 Running "vercel build"
+03:45:12.685 Vercel CLI 50.5.2
+03:45:13.254 Running "install" command: `npm install`...
+03:45:30.801 
+03:45:30.802 added 597 packages, and audited 598 packages in 17s
+03:45:30.802 
+03:45:30.802 86 packages are looking for funding
+03:45:30.802   run `npm fund` for details
+03:45:30.811 
+03:45:30.812 6 vulnerabilities (4 moderate, 2 high)
+03:45:30.812 
+03:45:30.812 To address issues that do not require attention, run:
+03:45:30.812   npm audit fix
+03:45:30.812 
+03:45:30.812 To address all issues possible (including breaking changes), run:
+03:45:30.812   npm audit fix --force
+03:45:30.812 
+03:45:30.812 Some issues need review, and may require choosing
+03:45:30.812 a different dependency.
+03:45:30.812 
+03:45:30.813 Run `npm audit` for details.
+03:45:31.262 
+03:45:31.263 up to date, audited 1 package in 213ms
+03:45:31.263 
+03:45:31.263 found 0 vulnerabilities
+03:45:31.730 [36mvite v7.3.0 [32mbuilding client environment for production...[36m[39m
+03:45:31.807 transforming...
+03:45:31.852 [32m✓[39m 5 modules transformed.
+03:45:31.856 [31m✗[39m Build failed in 96ms
+03:45:31.857 [31merror during build:
+03:45:31.857 [31m[vite]: Rollup failed to resolve import "@/components/ui/toaster" from "/vercel/path0/client/src/App.tsx".
+03:45:31.857 This is most likely unintended because it can break your application at runtime.
+03:45:31.857 If you do want to externalize this module explicitly add it to
+03:45:31.857 `build.rollupOptions.external`[31m
+03:45:31.857     at viteLog (file:///vercel/path0/node_modules/vite/dist/node/chunks/config.js:33634:57)
+03:45:31.857     at onRollupLog (file:///vercel/path0/node_modules/vite/dist/node/chunks/config.js:33664:7)
+03:45:31.857     at onLog (file:///vercel/path0/node_modules/vite/dist/node/chunks/config.js:33466:4)
+03:45:31.857     at file:///vercel/path0/node_modules/rollup/dist/es/shared/node-entry.js:21004:32
+03:45:31.858     at Object.logger [as onLog] (file:///vercel/path0/node_modules/rollup/dist/es/shared/node-entry.js:22891:9)
+03:45:31.858     at ModuleLoader.handleInvalidResolvedId (file:///vercel/path0/node_modules/rollup/dist/es/shared/node-entry.js:21635:26)
+03:45:31.858     at file:///vercel/path0/node_modules/rollup/dist/es/shared/node-entry.js:21593:26[39m
+03:45:31.876 Error: Command "cd client && npm install && npx vite build" exited with 1
