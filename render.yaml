@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: privatebet
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+    healthCheckPath: /api/health
+
+databases:
+  - name: privatebet-db
+    plan: free
+    databaseName: privatebet
