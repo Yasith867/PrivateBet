@@ -3,11 +3,6 @@
   "outputDirectory": "client/dist",
   "installCommand": "cd api && npm install && cd ../client && npm install",
   "framework": null,
-  "functions": {
-    "api/**/*.ts": {
-      "runtime": "@vercel/node@3.2.0"
-    }
-  },
   "rewrites": [
     { "source": "/api/markets/:id", "destination": "/api/markets/[id]" },
     { "source": "/api/:path*", "destination": "/api/:path*" },
