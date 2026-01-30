@@ -1,0 +1,87 @@
+16:01:06.428 Running build in Washington, D.C., USA (East) – iad1
+16:01:06.429 Build machine configuration: 4 cores, 8 GB
+16:01:06.443 Cloning github.com/Yasith867/PrivateBet (Branch: main, Commit: 2014a85)
+16:01:06.444 Skipping build cache, deployment was triggered without cache.
+16:01:06.962 Cloning completed: 518.000ms
+16:01:07.790 Running "vercel build"
+16:01:08.851 Vercel CLI 50.5.2
+16:01:09.547 Running "install" command: `cd api && npm install && cd ../client && npm install`...
+16:01:15.410 npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+16:01:15.491 npm warn deprecated are-we-there-yet@2.0.0: This package is no longer supported.
+16:01:15.519 npm warn deprecated npmlog@5.0.1: This package is no longer supported.
+16:01:15.525 npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+16:01:15.582 npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+16:01:15.593 npm warn deprecated gauge@3.0.2: This package is no longer supported.
+16:01:15.756 npm warn deprecated tar@6.2.1: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exhorbitant rates) by contacting i@izs.me
+16:01:16.814 
+16:01:16.814 added 159 packages, and audited 160 packages in 7s
+16:01:16.814 
+16:01:16.814 12 packages are looking for funding
+16:01:16.814   run `npm fund` for details
+16:01:16.825 
+16:01:16.825 6 vulnerabilities (2 moderate, 4 high)
+16:01:16.825 
+16:01:16.825 To address issues that do not require attention, run:
+16:01:16.825   npm audit fix
+16:01:16.825 
+16:01:16.825 To address all issues (including breaking changes), run:
+16:01:16.825   npm audit fix --force
+16:01:16.825 
+16:01:16.825 Run `npm audit` for details.
+16:01:37.305 
+16:01:37.306 added 308 packages, and audited 309 packages in 20s
+16:01:37.306 
+16:01:37.306 38 packages are looking for funding
+16:01:37.306   run `npm fund` for details
+16:01:37.308 
+16:01:37.308 2 moderate severity vulnerabilities
+16:01:37.308 
+16:01:37.309 Some issues need review, and may require choosing
+16:01:37.309 a different dependency.
+16:01:37.309 
+16:01:37.309 Run `npm audit` for details.
+16:01:38.443 
+16:01:38.444 added 3 packages, and audited 312 packages in 946ms
+16:01:38.444 
+16:01:38.444 39 packages are looking for funding
+16:01:38.444   run `npm fund` for details
+16:01:38.447 
+16:01:38.447 2 moderate severity vulnerabilities
+16:01:38.447 
+16:01:38.447 Some issues need review, and may require choosing
+16:01:38.447 a different dependency.
+16:01:38.447 
+16:01:38.447 Run `npm audit` for details.
+16:01:38.902 
+16:01:38.902 > privatebet-client@0.0.0 build
+16:01:38.903 > npx vite build
+16:01:38.903 
+16:01:39.603 [36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+16:01:39.960 transforming...
+16:01:40.884 
+16:01:40.884 A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+16:01:43.895 [32m✓[39m 1810 modules transformed.
+16:01:44.345 rendering chunks...
+16:01:44.360 computing gzip size...
+16:01:44.465 [2mdist/[22m[32mindex.html                 [39m[1m[2m  1.34 kB[22m[1m[22m[2m │ gzip:   0.65 kB[22m
+16:01:44.465 [2mdist/[22m[2massets/[22m[35mindex-CNu2uqWH.css  [39m[1m[2m 80.59 kB[22m[1m[22m[2m │ gzip:  13.71 kB[22m
+16:01:44.465 [2mdist/[22m[2massets/[22m[36mindex-CkMapZrC.js   [39m[1m[33m545.16 kB[39m[22m[2m │ gzip: 166.90 kB[22m
+16:01:44.465 [33m
+16:01:44.466 (!) Some chunks are larger than 500 kB after minification. Consider:
+16:01:44.466 - Using dynamic import() to code-split the application
+16:01:44.466 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+16:01:44.466 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+16:01:44.466 [32m✓ built in 4.83s[39m
+16:01:44.574 Installing dependencies...
+16:01:44.969 
+16:01:44.970 up to date in 335ms
+16:01:44.970 
+16:01:44.971 12 packages are looking for funding
+16:01:44.971   run `npm fund` for details
+16:01:45.325 Using TypeScript 4.9.5 (local user-provided)
+16:01:47.624 Using TypeScript 4.9.5 (local user-provided)
+16:01:47.753 Using TypeScript 4.9.5 (local user-provided)
+16:01:47.832 Using TypeScript 4.9.5 (local user-provided)
+16:01:48.041 Using TypeScript 4.9.5 (local user-provided)
+16:01:48.281 Build Completed in /vercel/output [39s]
+16:01:48.344 Deploying outputs...
