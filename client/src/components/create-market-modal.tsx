@@ -166,15 +166,16 @@ export function CreateMarketModal() {
         transactionId: transactionId,
       });
 
+      const hasValidTx = transactionId && transactionId.length >= 61;
       toast({
         title: 'Market Created Successfully',
         description: (
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Shield className="h-4 w-4 text-accent" />
-              <span>Your prediction market is now live on Aleo</span>
+              <span>{hasValidTx ? 'Your prediction market is now live on Aleo' : 'Market saved! Connect Leo Wallet with testnet credits for blockchain transactions.'}</span>
             </div>
-            {transactionId && (
+            {hasValidTx && (
               <a
                 href={`https://testnet.explorer.provable.com/transaction/${transactionId}`}
                 target="_blank"

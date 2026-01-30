@@ -183,7 +183,7 @@ export default function MarketDetailPage() {
                 <Share2 className="h-4 w-4 mr-2" />
                 Share
               </Button>
-              {market.transactionId && (
+              {market.transactionId && market.transactionId.length >= 61 && (
                 <Button variant="outline" size="sm" asChild>
                   <a
                     href={`https://testnet.explorer.provable.com/transaction/${market.transactionId}`}
