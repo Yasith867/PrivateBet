@@ -477,18 +477,6 @@ Response:
 ```
 
 ---
-
-## Deployment Information
-
-### Deployed Contract
-
-| Property | Value |
-|----------|-------|
-| Program Name | `prediction_marketv01.aleo` |
-| Network | Aleo Testnet Beta |
-| Transaction ID | `at1p27dwk0fj8ev4pjjr560enn7swmhz349j5dsswurwwzv0ejsrqysrtvel0` |
-| Explorer | https://testnet.explorer.provable.com |
-
 ### API Endpoints
 
 | Service | URL |
